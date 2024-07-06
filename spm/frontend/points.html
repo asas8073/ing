@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Points</title>
+</head>
+<body>
+  <h1>Points</h1>
+  <div id="pointsDisplay">Loading points...</div>
+  <button id="earnPoints">Earn 10 Points</button>
+  <button id="spendPoints">Spend 10 Points</button>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', async () => {
+      const token = localStorage.getItem('token');
+      const response = await fetch('http://localhost:3000/points', {
+        headers: { 'Authorization': `Bearer ${token}` }
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        document.getElementById('pointsDisplay').textContent = `Your points: ${data.points}`;
+      } else {
+        alert('Failed to load points');
+      }
+    });
+
+    document.getElementById('earnPoints').addEventListener('click', async () => {
+      const token = localStorage.getItem('token');
+      const response = await fetch('http://localhost:3000/points', {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ points: 10 })
+      });
+
+      if (response.ok) {
